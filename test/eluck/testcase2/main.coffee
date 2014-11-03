@@ -40,15 +40,25 @@ flushBufferToDrive = (buffer, name) ->
   require('fs').writeFileSync(snapshotName, buffer)
 
 
+fixBuffer = (buffer) ->
+  for value, index in [0xef, 0xbe, 0xad, 0xde, 0x00, 0x44, 0x21, 0xe8, 0x0a, 0x00, 0x00, 0x00]
+    #console.log(buffer[index])
+    buffer[index] = value
+    #console.log(buffer[index])
+    #console.log('')
+
+
 
 testcase('testcase1')
-saveSnapshotToDrive('testcase1')
+#saveSnapshotToDrive('testcase1')
 buffer = saveSnapshotToBuffer()
 setTimeout ->
+    #console.log(buffer)
+    fixBuffer(buffer)
+    #console.log(buffer)
     flushBufferToDrive(buffer, 'testcase2')
     wtf.trace.stop()
     setTimeout ->
-      wtf.trace.stop()
       console.log('exiting normally')
       process.exit(0)
     , 5000
