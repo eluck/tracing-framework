@@ -434,7 +434,7 @@ closure_js_library(
         '--define=wtf.NODE=true',
         '--define=wtf.db.exports.ENABLE_EXPORTS=true',
         '--define=wtf.trace.exports.ENABLE_EXPORTS=true',
-        '--output_wrapper="module.exports = (function(exports){%output%;return this.wtf;}).call(global); delete global.wtf;"',
+        '--output_wrapper="module.exports = function(){ return (function(exports){%output%; return this.wtf;}).call(global); }; delete global.wtf;"',
         ])
 
 file_set(
