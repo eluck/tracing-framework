@@ -1,17 +1,22 @@
 console.log 'This test case reveals an issue in server side profiling.\n',
-'  The issue: All profiles after the first one are broken.\n',
+'  Issue: All profiles after the first one are broken.\n',
+'  The issue is fixed by removing wtf object from CommonJS cache.\n',
 '  How to run the testcase:\n',
 '    1. Launch this script "node main.js"\n',
 '    2. The script will create two trace files: the first one - correct, the second -
        broken (cannot be loaded by viewer)\n'
 
 root = '../../..'
-wtf = require("#{root}/build-out/wtf_node_js_compiled")
+getNewWTF = require("#{root}/build-out/wtf_node_js_compiled")
+wtf = {}
 randomToken = require('crypto').randomBytes(8).toString('hex');
 
 testcase = (name) ->
+  wtf = getNewWTF()
+  console.log('wtf:', wtf)
   console.log("running #{name}")
-  wtf.trace.node.start()
+  wtf.trace.prepare()
+  wtf.trace.start()
   scope = wtf.trace.enterScope name
   for n in [0..100000000]
     do ->

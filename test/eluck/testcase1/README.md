@@ -1,6 +1,7 @@
 This test case reveals an issue in server side profiling.
 
 Issue: All profiles after the first one are broken. 
+The issue is fixed by removing wtf object from CommonJS cache.
 
 How to run the testcase:
   1. Launch this script "node main.js"
