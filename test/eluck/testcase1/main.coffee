@@ -1,5 +1,6 @@
 console.log 'This test case reveals an issue in server side profiling.\n',
 '  Issue: All profiles after the first one are broken.\n',
+'  Code with the issue: https://github.com/eluck/tracing-framework/tree/70b4bfa916bb9ecd988655e47088a3c6fdd8483b/test/eluck/testcase1\n',
 '\n',
 '  The issue is fixed by removing wtf object from CommonJS cache.\n',
 '  Commit with fix: https://github.com/eluck/tracing-framework/commit/3e9973d6f1b7049d5a8cb8e30f0b7b60b29dc573\n',
