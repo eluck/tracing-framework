@@ -1,7 +1,10 @@
 This test case reveals an issue in server side profiling.
 
-The issue: Profiles saved in memory and in files have different headers. Profiles saved in memory cannot be parsed
+Issue: Profiles saved in memory and in files have different headers. Profiles saved in memory cannot be parsed
 by viewer.
+
+A workaround for the issue is found: update header of a snapshot saved into a buffer.
+Commit with workaround: https://github.com/eluck/tracing-framework/commit/7e056c523ff8dc7d619b1559ecc38ed6de7f0019 
 
 How to run the testcase:
   1. Launch this script "node main.js"

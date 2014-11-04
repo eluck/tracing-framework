@@ -2,11 +2,11 @@
 (function() {
   var buffer, fixBuffer, flushBufferToDrive, randomToken, root, saveSnapshotToBuffer, saveSnapshotToDrive, testcase, wtf;
 
-  console.log('This test case reveals an issue in server side profiling.\n', '  The issue: Profiles saved in memory and in files have different headers. Profiles saved in memory cannot be parsed by viewer.\n', '  How to run the testcase:\n', '    1. Launch this script "node main.js"\n', '    2. The script will create two snapshots: the first one - correct - will be saved into a file, the second - broken - will be saved into a memory buffer and then flushed to disk\n', '    3. The second snapshot is broken and cannot be loaded by viewer (its header is invalid, however the body is ok)\n');
+  console.log('This test case reveals an issue in server side profiling.\n', '  Issue: Profiles saved in memory and in files have different headers. Profiles saved in memory cannot be parsed by viewer.\n', '\n', '  A workaround for the issue is found: update header of a snapshot saved into a buffer.\n', '  Commit with workaround: https://github.com/eluck/tracing-framework/commit/7e056c523ff8dc7d619b1559ecc38ed6de7f0019\n', '\n', '  How to run the testcase:\n', '    1. Launch this script "node main.js"\n', '    2. The script will create two snapshots: the first one - correct - will be saved into a file, the second - broken - will be saved into a memory buffer and then flushed to disk\n', '    3. The second snapshot is broken and cannot be loaded by viewer (its header is invalid, however the body is ok)\n');
 
   root = '../../..';
 
-  wtf = require("" + root + "/build-out/wtf_node_js_compiled");
+  wtf = require("" + root + "/build-out/wtf_node_js_compiled")();
 
   randomToken = require('crypto').randomBytes(8).toString('hex');
 
@@ -50,10 +50,7 @@
     _results = [];
     for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
       value = _ref[index];
-      console.log(buffer[index]);
-      buffer[index] = value;
-      console.log(buffer[index]);
-      _results.push(console.log(''));
+      _results.push(buffer[index] = value);
     }
     return _results;
   };
@@ -63,9 +60,7 @@
   buffer = saveSnapshotToBuffer();
 
   setTimeout(function() {
-    console.log(buffer);
     fixBuffer(buffer);
-    console.log(buffer);
     flushBufferToDrive(buffer, 'testcase2');
     wtf.trace.stop();
     return setTimeout(function() {

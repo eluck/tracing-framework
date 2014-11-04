@@ -1,6 +1,10 @@
 console.log 'This test case reveals an issue in server side profiling.\n',
-'  The issue: Profiles saved in memory and in files have different headers. Profiles saved in memory cannot
+'  Issue: Profiles saved in memory and in files have different headers. Profiles saved in memory cannot
     be parsed by viewer.\n',
+'\n',
+'  A workaround for the issue is found: update header of a snapshot saved into a buffer.\n',
+'  Commit with workaround: https://github.com/eluck/tracing-framework/commit/7e056c523ff8dc7d619b1559ecc38ed6de7f0019\n',
+'\n',
 '  How to run the testcase:\n',
 '    1. Launch this script "node main.js"\n',
 '    2. The script will create two snapshots: the first one - correct - will be saved into a file, the second -
@@ -8,7 +12,7 @@ console.log 'This test case reveals an issue in server side profiling.\n',
 '    3. The second snapshot is broken and cannot be loaded by viewer (its header is invalid, however the body is ok)\n'
 
 root = '../../..'
-wtf = require("#{root}/build-out/wtf_node_js_compiled")
+wtf = require("#{root}/build-out/wtf_node_js_compiled")()
 randomToken = require('crypto').randomBytes(8).toString('hex');
 
 
@@ -42,10 +46,7 @@ flushBufferToDrive = (buffer, name) ->
 
 fixBuffer = (buffer) ->
   for value, index in [0xef, 0xbe, 0xad, 0xde, 0x00, 0x44, 0x21, 0xe8, 0x0a, 0x00, 0x00, 0x00]
-    #console.log(buffer[index])
     buffer[index] = value
-    #console.log(buffer[index])
-    #console.log('')
 
 
 
@@ -53,9 +54,7 @@ testcase('testcase1')
 #saveSnapshotToDrive('testcase1')
 buffer = saveSnapshotToBuffer()
 setTimeout ->
-    #console.log(buffer)
     fixBuffer(buffer)
-    #console.log(buffer)
     flushBufferToDrive(buffer, 'testcase2')
     wtf.trace.stop()
     setTimeout ->
